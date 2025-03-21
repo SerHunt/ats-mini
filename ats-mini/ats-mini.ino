@@ -77,7 +77,8 @@
 #define vol_offset_y   150    // Volume vertical offset
 #define rds_offset_x   165    // RDS horizontal offset
 #define rds_offset_y    94    // RDS vertical offset
-#define batt_datum     286    // Battery meter x offset
+#define batt_offset_x  288    // Battery meter x offset
+#define batt_offset_y    0    // Battery meter y offset
 #define clock_datum     90    // Clock x offset
 
 // Battery Monitoring
@@ -92,7 +93,6 @@
 #define MIN_ELAPSED_TIME         5  // 300
 #define MIN_ELAPSED_RSSI_TIME  200  // RSSI check uses IN_ELAPSED_RSSI_TIME * 6 = 1.2s
 #define ELAPSED_COMMAND      10000  // time to turn off the last command controlled by encoder. Time to goes back to the VFO control // G8PTN: Increased time and corrected comment
-#define ELAPSED_CLICK         1500  // time to check the double click commands
 #define DEFAULT_VOLUME          35  // change it for your favorite sound volume
 #define STRENGTH_CHECK_TIME   1500  // Not used
 #define RDS_CHECK_TIME         250  // Increased from 90
@@ -153,8 +153,8 @@ const uint16_t size_content = sizeof ssb_patch_content; // see patch_init.h
 // Update F/W version comment as required   F/W VER    Function                                                           Locn (dec)            Bytes
 // ====================================================================================================================================================
 const uint8_t  app_id  = 67;          //               EEPROM ID.  If EEPROM read value mismatch, reset EEPROM            eeprom_address        1
-const uint16_t app_ver = 105;         //     v1.05     EEPROM VER. If EEPROM read value mismatch (older), reset EEPROM    eeprom_ver_address    2
-char app_date[] = "2025-03-16";
+const uint16_t app_ver = 106;         //     v1.06     EEPROM VER. If EEPROM read value mismatch (older), reset EEPROM    eeprom_ver_address    2
+char app_date[] = "2025-03-20";
 const int eeprom_address = 0;         //               EEPROM start address
 const int eeprom_set_address = 256;   //               EEPROM setting base address
 const int eeprom_setp_address = 272;  //               EEPROM setting (per band) base address
@@ -171,7 +171,6 @@ int8_t agcIdx = 0;
 uint8_t disableAgc = 0;
 int8_t agcNdx = 0;
 int8_t softMuteMaxAttIdx = 4;
-uint8_t countClick = 0;
 
 uint8_t seekDirection = 1;
 bool seekStop = false;        // G8PTN: Added flag to abort seeking on rotary encoder detection
@@ -932,7 +931,6 @@ void disableCommands()
   cmdMode = false;
   cmdMenu = false;
   cmdSoftMuteMaxAtt = false;
-  countClick = 0;
   cmdCal = false;
   cmdAvc = false;
   cmdSettings = false;
@@ -1108,11 +1106,9 @@ void setBand(int8_t up_down)
 /**
  * Switch the radio to current band
  */
-void useBand()
-{
+void useBand() {
   currentMode = bandMODE[bandIdx];                  // G8PTN: Added to support mode per band
-  if (band[bandIdx].bandType == FM_BAND_TYPE)
-  {
+  if (band[bandIdx].bandType == FM_BAND_TYPE) {
     currentMode = FM;
     rx.setTuneFrequencyAntennaCapacitor(0);
     rx.setFM(band[bandIdx].minimumFreq, band[bandIdx].maximumFreq, band[bandIdx].currentFreq, tabFmStep[band[bandIdx].currentStepIdx]);
@@ -1125,13 +1121,10 @@ void useBand()
     rx.setRdsConfig(1, 2, 2, 2, 2);
     rx.setGpioCtl(1,0,0);   // G8PTN: Enable GPIO1 as output
     rx.setGpio(0,0,0);      // G8PTN: Set GPIO1 = 0
-  }
-  else
-  {
+  } else {
     // set the tuning capacitor for SW or MW/LW
     rx.setTuneFrequencyAntennaCapacitor((band[bandIdx].bandType == MW_BAND_TYPE || band[bandIdx].bandType == LW_BAND_TYPE) ? 0 : 1);
-    if (ssbLoaded)
-    {
+    if (ssbLoaded) {
       // Configure SI4732 for SSB
       rx.setSSB(
         band[bandIdx].minimumFreq,
@@ -1146,9 +1139,7 @@ void useBand()
       else bwIdxSSB = band[bandIdx].bandwidthIdx;
       rx.setSSBAudioBandwidth(bandwidthSSB[bwIdxSSB].idx);
       updateBFO();                                          // G8PTN: If SSB is loaded update BFO
-    }
-    else
-    {
+    } else {
       currentMode = AM;
       rx.setAM(
         band[bandIdx].minimumFreq,
@@ -1165,7 +1156,6 @@ void useBand()
     rx.setGpio(1,0,0);      // G8PTN: Set GPIO1 = 1
     rx.setSeekAmLimits(band[bandIdx].minimumFreq, band[bandIdx].maximumFreq); // Consider the range all defined current band
     rx.setSeekAmSpacing(5); // Max 10kHz for spacing
-
   }
 
   // G8PTN: Added
@@ -2337,37 +2327,38 @@ void batteryMonitor() {
   uint16_t batteryLevelColor;
 
   if (batt_soc_state == 0 ) {
-    chargeLevel=7;
+    chargeLevel=6;
     batteryLevelColor=theme[themeIdx].batt_low;
   }
   if (batt_soc_state == 1 ) {
-    chargeLevel=14;
+    chargeLevel=12;
     batteryLevelColor=theme[themeIdx].batt_full;
   }
   if (batt_soc_state == 2 ) {
-    chargeLevel=21;
+    chargeLevel=18;
     batteryLevelColor=theme[themeIdx].batt_full;
   }
   if (batt_soc_state == 3 ) {
-    chargeLevel=28;
+    chargeLevel=24;
     batteryLevelColor=theme[themeIdx].batt_full;
   }
 
   // Set display information
-  spr.fillRect(batt_datum, 1, 30, 14, theme[themeIdx].batt_border);
-  spr.fillRect(batt_datum + 30, 3, 3, 10, theme[themeIdx].batt_border);
+  spr.drawRoundRect(batt_offset_x, batt_offset_y + 1, 28, 14, 3, theme[themeIdx].batt_border);
+  spr.drawLine(batt_offset_x + 29, batt_offset_y + 5, batt_offset_x + 29, batt_offset_y + 10, theme[themeIdx].batt_border);
+  spr.drawLine(batt_offset_x + 30, batt_offset_y + 6, batt_offset_x + 30, batt_offset_y + 9, theme[themeIdx].batt_border);
 
   spr.setTextDatum(TR_DATUM);
   spr.setTextColor(theme[themeIdx].batt_voltage, theme[themeIdx].bg);
 
 #if THEME_EDITOR
-  spr.fillRect(batt_datum - 32, 1, 30, 14, theme[themeIdx].batt_border);
-  spr.fillRect(batt_datum -32 + 30, 3, 3, 10, theme[themeIdx].batt_border);
+  spr.drawRoundRect(batt_offset_x - 31, batt_offset_y + 1, 28, 14, 3, theme[themeIdx].batt_border);
+  spr.drawLine(batt_offset_x - 31 + 29, batt_offset_y + 5, batt_offset_x - 31 + 29, batt_offset_y + 10, theme[themeIdx].batt_border);
+  spr.drawLine(batt_offset_x - 31 + 30, batt_offset_y + 6, batt_offset_x - 31 + 30, batt_offset_y + 9, theme[themeIdx].batt_border);
 
-  spr.fillRect(batt_datum -32 + 1, 2, 28, 12, theme[themeIdx].bg);
-  spr.fillRect(batt_datum -32 + 1, 2, 21, 12, theme[themeIdx].batt_full);
-  spr.fillRect(batt_datum -32 + 1, 2, 14, 12, theme[themeIdx].batt_low);
-  spr.drawString("4.0V", batt_datum -32 - 3, 0, 2);
+  spr.fillRoundRect(batt_offset_x - 31 + 2, batt_offset_y + 3, 18, 10, 2, theme[themeIdx].batt_full);
+  spr.fillRoundRect(batt_offset_x - 31 + 2, batt_offset_y + 3, 12, 10, 2, theme[themeIdx].batt_low);
+  spr.drawString("4.0V", batt_offset_x - 31 - 3, batt_offset_y, 2);
 
   adc_volt_avr = 4.5;
 #endif
@@ -2375,16 +2366,22 @@ void batteryMonitor() {
   // With USB(5V) connected the voltage reading will be approx. VBUS - Diode Drop = 4.65V
   // If the average voltage is greater than 4.3V, show ligtning on the display
   if (adc_volt_avr > 4.3) {
-    spr.fillRect(batt_datum + 1, 2, 28, 12, theme[themeIdx].batt_charge);
-    spr.fillTriangle(batt_datum + 6, 7, batt_datum + 16, 7, batt_datum + 16, 4, theme[themeIdx].batt_icon);
-    spr.fillTriangle(batt_datum + 23, 8, batt_datum + 13, 8, batt_datum + 13, 11, theme[themeIdx].batt_icon);
-  }
-  else {
+    spr.fillRoundRect(batt_offset_x + 2, batt_offset_y + 3, 24, 10, 2, theme[themeIdx].batt_charge);
+    spr.drawLine(batt_offset_x + 9 + 8, batt_offset_y + 1, batt_offset_x + 9 + 6, batt_offset_y + 1 + 5, theme[themeIdx].bg);
+    spr.drawLine(batt_offset_x + 9 + 6, batt_offset_y + 1 + 5, batt_offset_x + 9 + 10, batt_offset_y + 1 + 5, theme[themeIdx].bg);
+    spr.drawLine(batt_offset_x + 9 + 11, batt_offset_y + 1 + 6, batt_offset_x + 9 + 4, batt_offset_y + 1 + 13, theme[themeIdx].bg);
+    spr.drawLine(batt_offset_x + 9 + 2, batt_offset_y + 1 + 13, batt_offset_x + 9 + 4, batt_offset_y + 1 + 8, theme[themeIdx].bg);
+    spr.drawLine(batt_offset_x + 9 + 4, batt_offset_y + 1 + 8, batt_offset_x + 9 + 0, batt_offset_y + 1 + 8, theme[themeIdx].bg);
+    spr.drawLine(batt_offset_x + 9 - 1, batt_offset_y + 1 + 7, batt_offset_x + 9 + 6, batt_offset_y + 1 + 0, theme[themeIdx].bg);
+    spr.fillTriangle(batt_offset_x + 9 + 7, batt_offset_y + 1, batt_offset_x + 9 + 4, batt_offset_y + 1 + 6, batt_offset_x + 9, batt_offset_y + 1 + 7, theme[themeIdx].batt_icon);
+    spr.fillTriangle(batt_offset_x + 9 + 5, batt_offset_y + 1 + 6, batt_offset_x + 9 + 10, batt_offset_y + 1 + 6, batt_offset_x + 9 + 3, batt_offset_y + 1 + 13, theme[themeIdx].batt_icon);
+    spr.fillRect(batt_offset_x + 9 + 1, batt_offset_y + 1 + 6, 9, 2, theme[themeIdx].batt_icon);
+    spr.drawPixel(batt_offset_x + 9 + 3, batt_offset_y + 1 + 12, theme[themeIdx].batt_icon);
+  } else {
     char voltage[8];
-    spr.fillRect(batt_datum + 1, 2, 28, 12, theme[themeIdx].bg);
-    spr.fillRect(batt_datum + 1, 2, chargeLevel, 12, batteryLevelColor);
+    spr.fillRoundRect(batt_offset_x + 2, batt_offset_y + 3, chargeLevel, 10, 2, batteryLevelColor);
     sprintf(voltage, "%.02fV", adc_volt_avr);
-    spr.drawString(voltage, batt_datum - 3, 0, 2);
+    spr.drawString(voltage, batt_offset_x - 3, batt_offset_y, 2);
   }
 }
 
@@ -2631,7 +2628,7 @@ drawSprite();
 }
 
 
-void button_check() {
+void buttonCheck() {
   // G8PTN: Added
   // Push button detection
   // Only execute every 10 ms
@@ -2852,15 +2849,10 @@ void getColorTheme() {
 /**
  * Main loop
  */
-void loop()
-{
-
+void loop() {
   // Check if the encoder has moved.
-  if (encoderCount != 0 && currentSleep && !display_on) {
-    displayOn();
+  if (encoderCount != 0 && !display_on) {
     encoderCount = 0;
-    delay(MIN_ELAPSED_TIME);
-    elapsedSleep = millis();
   } else if (encoderCount != 0 && pb1_pressed) {
     seekDirection = (encoderCount == 1) ? 1 : 0;
     seekModePress = true;
@@ -2873,8 +2865,7 @@ void loop()
     elapsedSleep = millis();
   } else if (encoderCount != 0) {
     // G8PTN: The manual BFO adjusment is not required with the doFrequencyTuneSSB method, but leave for debug
-    if (bfoOn & isSSB())
-    {
+    if (bfoOn & isSSB()) {
       currentBFO = (encoderCount == 1) ? (currentBFO + currentBFOStep) : (currentBFO - currentBFOStep);
       // G8PTN: Clamp range to +/- BFOMax (as per doFrequencyTuneSSB)
       if (currentBFO >  BFOMax) currentBFO =  BFOMax;
@@ -2948,8 +2939,7 @@ void loop()
       #endif
 
       showFrequency();
-    }
-    else {
+    } else {
 
 #if TUNE_HOLDOFF
       // Tuning timer to hold off (FM/AM) display updates
@@ -3020,11 +3010,7 @@ void loop()
     resetEepromDelay();
     delay(MIN_ELAPSED_TIME);
     elapsedSleep = elapsedCommand = millis();
-  }
-  else
-  {
-    // G8PTN: Modified to use new button detection. Disable band menu on single push. Default to volume option
-    //if (digitalRead(ENCODER_PUSH_BUTTON) == LOW)
+  } else {
     if (pb1_long_pressed && !seekModePress) {
       pb1_long_pressed = pb1_short_pressed = pb1_pressed = false;
       if (display_on) {
@@ -3036,6 +3022,10 @@ void loop()
       delay(MIN_ELAPSED_TIME);
     } else if (pb1_short_released && !seekModePress) {
       pb1_released = pb1_short_released = pb1_long_released = false;
+      if (muted) {
+        rx.setVolume(mute_vol_val);
+        muted = false;
+      }
       cmdVolume = true;
       menuIdx = MENU_VOLUME;
       showVolume();
@@ -3043,33 +3033,27 @@ void loop()
       elapsedSleep = elapsedCommand = millis();
    } else if (pb1_released && !pb1_long_released && !seekModePress) {
       pb1_released = pb1_short_released = pb1_long_released = false;
-      //while (digitalRead(ENCODER_PUSH_BUTTON) == LOW) { }
-      countClick++;
-      if (currentSleep && !display_on) {
-        displayOn();
+      if (!display_on) {
+        if (currentSleep) {
+          displayOn();
+          elapsedSleep = millis();
+          delay(MIN_ELAPSED_TIME);
+        }
       } else if (cmdMenu) {
         currentMenuCmd = menuIdx;
         doCurrentMenuCmd();
       } else if (cmdSettings) {
         currentSettingsMenuCmd = settingsMenuIdx;
         doCurrentSettingsMenuCmd();
-      }
-      //else if (countClick == 1)
-      else if (countClick >= 1)                   // G8PTN: All actions now done on single press
-      { // If just one click, you can select the band by rotating the encoder
-        if (isMenuMode() || cmdAbout)
-        {
+      } else {
+        if (isMenuMode() || cmdAbout) {
           disableCommands();
           showStatus();
           showCommandStatus((char *)"VFO ");
-        }
-        else if (bfoOn) {
+        } else if (bfoOn) {
           bfoOn = false;
           showStatus();
-        }
-        else
-        {
-          //cmdBand = !cmdBand;
+        } else {
           cmdMenu = !cmdMenu;
           // menuIdx = MENU_VOLUME;
           currentMenuCmd = menuIdx;
@@ -3078,18 +3062,12 @@ void loop()
           drawSprite();
         }
       }
-      else                                       // G8PTN: Not used
-      { // GO to MENU if more than one click in less than 1/2 seconds.
-        cmdMenu = !cmdMenu;
-        if (cmdMenu)
-          showMenu();
-      }
       delay(MIN_ELAPSED_TIME);
       elapsedSleep = elapsedCommand = millis();
     }
   }
 
-  // Disable commands control
+  // Display sleep timeout
   if (currentSleep && display_on) {
     if ((millis() - elapsedSleep) > currentSleep * 1000) {
       displayOff();
@@ -3149,12 +3127,6 @@ void loop()
     elapsedCommand = millis();
   }
 
-  if ((millis() - elapsedClick) > ELAPSED_CLICK)
-  {
-    countClick = 0;
-    elapsedClick = millis();
-  }
-
   if ((millis() - lastRDSCheck) > RDS_CHECK_TIME) {
     if ((currentMode == FM) and (snr >= 12)) checkRDS();
     lastRDSCheck = millis();
@@ -3173,7 +3145,7 @@ void loop()
 
   // Check for button activity
   // In this case used for falling edge detection
-  button_check();
+  buttonCheck();
   if (!pb1_pressed && seekModePress) {
     seekModePress = false;
     pb1_released = pb1_short_released = pb1_long_released = false;
@@ -3224,6 +3196,8 @@ void loop()
     rx.getCurrentReceivedSignalQuality();
     uint8_t remote_rssi = rx.getCurrentRSSI();
 
+    uint16_t tuning_capacitor = rx.getAntennaTuningCapacitor();
+ 
     // Remote serial
     Serial.print(app_ver);                      // Firmware version
     Serial.print(",");
@@ -3248,20 +3222,11 @@ void loop()
     Serial.print(agcIdx);                       // AGC/ATTN (FM/AM/SSB)
     Serial.print(",");
 
-    Serial.print(cmdBand);                      // Band command mode
-    Serial.print(",");
-    Serial.print(cmdMode);                      // Mode command mode
-    Serial.print(",");
-    Serial.print(cmdStep);                      // Step command mode
-    Serial.print(",");
-    Serial.print(cmdBandwidth);                 // Bandwidth command mode
-    Serial.print(",");
-    Serial.print(cmdAgc);                       // AGC/ATTN command mode
-    Serial.print(",");
-
     Serial.print(remote_volume);                // Volume
     Serial.print(",");
     Serial.print(remote_rssi);                  // RSSI
+    Serial.print(",");
+    Serial.print(tuning_capacitor);             // Tuning cappacitor
     Serial.print(",");
     Serial.print(adc_read_avr);                 // V_BAT/2 (ADC average value)
     Serial.print(",");
