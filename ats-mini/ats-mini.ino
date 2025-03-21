@@ -83,7 +83,7 @@
 
 // Battery Monitoring
 #define BATT_ADC_READS          10  // ADC reads for average calculation (Maximum value = 16 to avoid rollover in average calculation)
-#define BATT_ADC_FACTOR      1.785  // ADC correction factor used for the battery monitor
+#define BATT_ADC_FACTOR      1.795  // ADC correction factor used for the battery monitor
 #define BATT_SOC_LEVEL1      3.680  // Battery SOC voltage for 25%
 #define BATT_SOC_LEVEL2      3.780  // Battery SOC voltage for 50%
 #define BATT_SOC_LEVEL3      3.880  // Battery SOC voltage for 75%
@@ -153,8 +153,8 @@ const uint16_t size_content = sizeof ssb_patch_content; // see patch_init.h
 // Update F/W version comment as required   F/W VER    Function                                                           Locn (dec)            Bytes
 // ====================================================================================================================================================
 const uint8_t  app_id  = 67;          //               EEPROM ID.  If EEPROM read value mismatch, reset EEPROM            eeprom_address        1
-const uint16_t app_ver = 106;         //     v1.06     EEPROM VER. If EEPROM read value mismatch (older), reset EEPROM    eeprom_ver_address    2
-char app_date[] = "2025-03-20";
+const uint16_t app_ver = 107;         //     v1.07     EEPROM VER. If EEPROM read value mismatch (older), reset EEPROM    eeprom_ver_address    2
+char app_date[] = "2025-03-21";
 const int eeprom_address = 0;         //               EEPROM start address
 const int eeprom_set_address = 256;   //               EEPROM setting base address
 const int eeprom_setp_address = 272;  //               EEPROM setting (per band) base address
@@ -1110,7 +1110,7 @@ void useBand() {
   currentMode = bandMODE[bandIdx];                  // G8PTN: Added to support mode per band
   if (band[bandIdx].bandType == FM_BAND_TYPE) {
     currentMode = FM;
-    rx.setTuneFrequencyAntennaCapacitor(0);
+    // rx.setTuneFrequencyAntennaCapacitor(0);
     rx.setFM(band[bandIdx].minimumFreq, band[bandIdx].maximumFreq, band[bandIdx].currentFreq, tabFmStep[band[bandIdx].currentStepIdx]);
     rx.setSeekFmLimits(band[bandIdx].minimumFreq, band[bandIdx].maximumFreq);
     bfoOn = ssbLoaded = false;
@@ -1123,7 +1123,7 @@ void useBand() {
     rx.setGpio(0,0,0);      // G8PTN: Set GPIO1 = 0
   } else {
     // set the tuning capacitor for SW or MW/LW
-    rx.setTuneFrequencyAntennaCapacitor((band[bandIdx].bandType == MW_BAND_TYPE || band[bandIdx].bandType == LW_BAND_TYPE) ? 0 : 1);
+    // rx.setTuneFrequencyAntennaCapacitor((band[bandIdx].bandType == MW_BAND_TYPE || band[bandIdx].bandType == LW_BAND_TYPE) ? 0 : 1);
     if (ssbLoaded) {
       // Configure SI4732 for SSB
       rx.setSSB(
@@ -3196,8 +3196,10 @@ void loop() {
     rx.getCurrentReceivedSignalQuality();
     uint8_t remote_rssi = rx.getCurrentRSSI();
 
+    // Use rx.getFrequency to force read of capacitor value from SI4732/5
+    rx.getFrequency();
     uint16_t tuning_capacitor = rx.getAntennaTuningCapacitor();
- 
+
     // Remote serial
     Serial.print(app_ver);                      // Firmware version
     Serial.print(",");
@@ -3207,7 +3209,7 @@ void loop() {
     Serial.print(currentBFO);                   // Frequency (Hz x 1000)
     Serial.print(",");
 
-    Serial.print(bandIdx);                      // Band
+    Serial.print(band[bandIdx].bandName);      // Band
     Serial.print(",");
     Serial.print(currentMode);                  // Mode
     Serial.print(",");
