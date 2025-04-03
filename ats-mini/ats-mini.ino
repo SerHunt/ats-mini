@@ -462,29 +462,31 @@ typedef struct
               Turn your receiver on with the encoder push button pressed at first time to RESET the eeprom content.
 */
 
-#define BAND_VHF 0
-#define BAND_MW1 1
-#define BAND_MW2 2
-#define BAND_MW3 3
-#define BAND_80M 4
-#define BAND_SW1 5
-#define BAND_SW2 6
-#define BAND_40M 7
-#define BAND_SW3 8
-#define BAND_SW4 9
-#define BAND_SW5 10
-#define BAND_SW6 11
-#define BAND_20M 12
-#define BAND_SW7 13
-#define BAND_SW8 14
-#define BAND_15M 15
-#define BAND_SW9 16
-#define BAND_CB  17
-#define BAND_10M 18
-#define BAND_ALL 19
+#define BAND_FM1 0
+#define BAND_FM2 1
+#define BAND_MW1 2
+#define BAND_MW2 3
+#define BAND_MW3 4
+#define BAND_80M 5
+#define BAND_SW1 6
+#define BAND_SW2 7
+#define BAND_40M 8
+#define BAND_SW3 9
+#define BAND_SW4 10
+#define BAND_SW5 11
+#define BAND_SW6 12
+#define BAND_20M 13
+#define BAND_SW7 14
+#define BAND_SW8 15
+#define BAND_15M 16
+#define BAND_SW9 17
+#define BAND_CB  18
+#define BAND_10M 19
+#define BAND_ALL 20
 
 Band band[] = {
-    {"VHF", FM_BAND_TYPE, 6400, 10800, 10390, 1, 0},
+    {"FM1", FM_BAND_TYPE, 6400, 8750, 7000, 1, 0},
+    {"FM2", FM_BAND_TYPE, 8750, 10800, 10290, 1, 0},
     {"MW1", MW_BAND_TYPE, 150, 1720, 810, 3, 4},
     {"MW2", MW_BAND_TYPE, 531, 1701, 783, 2, 4},
     {"MW3", MW_BAND_TYPE, 1700, 3500, 2500, 1, 4},
@@ -514,12 +516,12 @@ int bandIdx = 0;
 
 // Calibration (per band). Size needs to be the same as band[]
 // Defaults
-int16_t bandCAL[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+int16_t bandCAL[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 // Mode (per band). Size needs to be the same as band[] and mode needs to be appropriate for bandType
 // Example bandType = FM_BAND_TYPE, bandMODE = FM. All other BAND_TYPE's, bandMODE = AM/LSB/USB
 // Defaults
-uint8_t bandMODE[] = {FM, AM, AM, AM, LSB, AM, AM, LSB, AM, AM, AM, AM, USB, AM, AM, USB, AM, AM, USB, AM};
+uint8_t bandMODE[] = { FM, FM, AM, AM, AM, LSB, AM, AM, LSB, AM, AM, AM, AM, USB, AM, AM, USB, AM, AM, USB, AM};
 
 const char *cbChannelNumber[] = {
     "1", "2", "3", "41",
