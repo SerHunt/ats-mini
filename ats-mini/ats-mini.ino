@@ -157,8 +157,8 @@ const uint16_t size_content = sizeof ssb_patch_content; // see patch_init.h
 // Update F/W version comment as required   F/W VER    Function                                                           Locn (dec)            Bytes
 // ====================================================================================================================================================
 const uint8_t  app_id  = 67;          //               EEPROM ID.  If EEPROM read value mismatch, reset EEPROM            eeprom_address        1
-const uint16_t app_ver = 108;         //     v1.08     EEPROM VER. If EEPROM read value mismatch (older), reset EEPROM    eeprom_ver_address    2
-char app_date[] = "2025-03-25";
+const uint16_t app_ver = 109;         //               EEPROM VER. If EEPROM read value mismatch (older), reset EEPROM    eeprom_ver_address    2
+char app_date[] = "2025-04-03";
 const int eeprom_address = 0;         //               EEPROM start address
 const int eeprom_set_address = 256;   //               EEPROM setting base address
 const int eeprom_setp_address = 272;  //               EEPROM setting (per band) base address
@@ -282,6 +282,7 @@ uint8_t time_seconds = 0;
 uint8_t time_minutes = 0;
 uint8_t time_hours = 0;
 char time_disp [16];
+bool time_synchronized = false;  // Flag to indicate if time has been synchronized with RDS
 
 // Remote serial
 #if USE_REMOTE
@@ -483,7 +484,7 @@ typedef struct
 #define BAND_ALL 19
 
 Band band[] = {
-    {"VHF", FM_BAND_TYPE, 6400, 10800, 10290, 1, 0},
+    {"VHF", FM_BAND_TYPE, 6400, 10800, 10390, 1, 0},
     {"MW1", MW_BAND_TYPE, 150, 1720, 810, 3, 4},
     {"MW2", MW_BAND_TYPE, 531, 1701, 783, 2, 4},
     {"MW3", MW_BAND_TYPE, 1700, 3500, 2500, 1, 4},
@@ -747,6 +748,8 @@ void setup()
     rx.setVolume(volume);                                // Set initial volume after EEPROM reset
     ledcWrite(PIN_LCD_BL, currentBrt);                   // Set initial brightness after EEPROM reset
   }
+
+  sprintf(time_disp, "%02d:%02dZ", time_hours, time_minutes);
 
   // Debug
   // Read all EEPROM locations
@@ -2015,10 +2018,12 @@ void drawSprite()
   spr.fillSprite(theme[themeIdx].bg);
 
   // Time
-  /* spr.setTextColor(theme[themeIdx].text,theme[themeIdx].bg); */
-  /* spr.setTextDatum(ML_DATUM); */
-  /* spr.drawString(time_disp,clock_datum,12,2); */
-  /* spr.setTextColor(theme[themeIdx].text,theme[themeIdx].bg); */
+  if (time_synchronized) {
+    spr.setTextColor(theme[themeIdx].text, theme[themeIdx].bg);
+    spr.setTextDatum(ML_DATUM);
+    spr.drawString(time_disp, batt_offset_x - 10, batt_offset_y + 24, 2); // Position below battery icon
+    spr.setTextColor(theme[themeIdx].text, theme[themeIdx].bg);
+  }
 
   /* // Screen activity icon */
   /* screen_toggle = !screen_toggle; */
@@ -2276,6 +2281,17 @@ void showRDSTime()
 {
   if (strcmp(bufferRdsTime, rdsTime) == 0)
     return;
+
+  if (snr < 12) return; // Do not synchronize if the signal is weak
+
+  // Copy new RDS time to buffer
+  strcpy(bufferRdsTime, rdsTime);
+  
+  // Synchronize internal time with RDS time
+  syncTimeFromRDS(rdsTime);
+  
+  // Display updated time (optional)
+  drawSprite();
 }
 
 void checkRDS()
@@ -2288,10 +2304,11 @@ void checkRDS()
       rdsMsg = rx.getRdsText2A();
       stationName = rx.getRdsText0A();
       rdsTime = rx.getRdsTime();
+      
       // if ( rdsMsg != NULL )   showRDSMsg();
       if (stationName != NULL)
           showRDSStation();
-      // if ( rdsTime != NULL ) showRDSTime();
+      if (rdsTime != NULL) showRDSTime();
     }
   }
 }
@@ -2775,7 +2792,7 @@ void clock_time()
     }
 
     // Format for display HH:MM (24 hour format)
-    sprintf(time_disp, "%2.2d:%2.2d", time_hours, time_minutes);
+    sprintf(time_disp, "%2.2d:%2.2dZ", time_hours, time_minutes);
   }
 }
 
@@ -2901,6 +2918,50 @@ void getColorTheme() {
 }
 #endif
 
+// Function to synchronize internal clock with RDS data
+void syncTimeFromRDS(char *rdsTimeStr)
+{
+  if (!rdsTimeStr) return;
+  
+  // The standard RDS time format is “HH:MM”.
+  // or sometimes more complex like “DD.MM.YY,HH:MM”.
+  char *timeField = strstr(rdsTimeStr, ":");
+  
+  // If we find a valid time format
+  if (timeField && (timeField >= rdsTimeStr + 2)) {
+    char hourStr[3] = {0};
+    char minStr[3] = {0};
+    
+    // Extract hours and minutes
+    hourStr[0] = *(timeField - 2);
+    hourStr[1] = *(timeField - 1);
+    minStr[0] = *(timeField + 1);
+    minStr[1] = *(timeField + 2);
+    
+    // Convert to numbers
+    int hours = atoi(hourStr);
+    int mins = atoi(minStr);
+    
+    // Check validity of values
+    if (hours >= 0 && hours < 24 && mins >= 0 && mins < 60) {
+      // Update internal clock
+      time_hours = hours;
+      time_minutes = mins;
+      time_seconds = 0; // Reset seconds for greater precision
+      
+      // Update display
+      sprintf(time_disp, "%02d:%02dZ", time_hours, time_minutes);
+      
+      time_synchronized = true;
+
+      #if DEBUG1_PRINT
+      Serial.print("Info: syncTimeFromRDS() >>> Synchronized clock: ");
+      Serial.println(time_disp);
+      #endif
+    }
+  }
+}
+
 /**
  * Main loop
  */
@@ -3017,10 +3078,10 @@ void loop() {
 #endif
 
       // G8PTN: Used in place of rx.frequencyUp() and rx.frequencyDown()
-      if (currentMode == FM)
-        currentFrequency += tabFmStep[currentStepIdx] * encoderCount;       // FM Up/Down
-      else
-        currentFrequency += tabAmStep[currentStepIdx] * encoderCount;       // AM Up/Down
+      uint16_t step = currentMode == FM ? tabFmStep[currentStepIdx] : tabAmStep[currentStepIdx]; 
+      uint16_t stepAdjust = currentFrequency % step;
+      step = !stepAdjust? step : encoderCount>0? step - stepAdjust : stepAdjust;
+      currentFrequency += step * encoderCount;
 
       // Band limit checking
       uint16_t bMin = band[bandIdx].minimumFreq;                            // Assign lower band limit
