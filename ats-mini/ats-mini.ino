@@ -483,7 +483,6 @@ typedef struct
 #define BAND_CB  18
 #define BAND_10M 19
 #define BAND_ALL 20
-#define BAND_VES 21
 
 
 Band band[] = {
@@ -508,8 +507,7 @@ Band band[] = {
     {"CB ", SW_BAND_TYPE, 26000, 30000, 27135, 0, 4},
     {"10M", SW_BAND_TYPE, 28000, 30000, 28400, 0, 4},
     {"ALL", SW_BAND_TYPE, 150, 30000, 15000, 0, 4} // All band. LW, MW and SW (from 150kHz to 30MHz)
-    {"VES", FM_BAND_TYPE, 10070, 10070, 10070, 1, 0},
-   };
+    };
 
 const int lastBand = (sizeof band / sizeof(Band)) - 1;
 int bandIdx = 0;
@@ -519,12 +517,12 @@ int bandIdx = 0;
 
 // Calibration (per band). Size needs to be the same as band[]
 // Defaults
-int16_t bandCAL[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+int16_t bandCAL[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 // Mode (per band). Size needs to be the same as band[] and mode needs to be appropriate for bandType
 // Example bandType = FM_BAND_TYPE, bandMODE = FM. All other BAND_TYPE's, bandMODE = AM/LSB/USB
 // Defaults
-uint8_t bandMODE[] = { FM, FM, AM, AM, AM, LSB, AM, AM, LSB, AM, AM, AM, AM, USB, AM, AM, USB, AM, AM, USB, AM, FM};
+uint8_t bandMODE[] = { FM, FM, AM, AM, AM, LSB, AM, AM, LSB, AM, AM, AM, AM, USB, AM, AM, USB, AM, AM, USB, AM};
 
 const char *cbChannelNumber[] = {
     "1", "2", "3", "41",
