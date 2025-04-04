@@ -158,7 +158,7 @@ const uint16_t size_content = sizeof ssb_patch_content; // see patch_init.h
 // ====================================================================================================================================================
 const uint8_t  app_id  = 67;          //               EEPROM ID.  If EEPROM read value mismatch, reset EEPROM            eeprom_address        1
 const uint16_t app_ver = 109;         //               EEPROM VER. If EEPROM read value mismatch (older), reset EEPROM    eeprom_ver_address    2
-char app_date[] = "2025-04-04";
+char app_date[] = "2025-04-03";
 const int eeprom_address = 0;         //               EEPROM start address
 const int eeprom_set_address = 256;   //               EEPROM setting base address
 const int eeprom_setp_address = 272;  //               EEPROM setting (per band) base address
@@ -483,6 +483,9 @@ typedef struct
 #define BAND_CB  18
 #define BAND_10M 19
 #define BAND_ALL 20
+#define BAND_VESTI 21
+#define BAND_RADIORUS 22
+#define BAND_MAYAK 23
 
 Band band[] = {
     {"FM1", FM_BAND_TYPE, 6400, 8750, 7200, 1, 0},
