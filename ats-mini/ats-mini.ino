@@ -134,8 +134,6 @@
 #if BFO_MENU_EN
 #define MENU_BFO         11
 #endif
-#define SAVED            12
-#endif
 
 // Settings Options
 #define MENU_BRIGHTNESS   0
@@ -197,7 +195,6 @@ bool cmdBrt = false;
 bool cmdSleep = false;
 bool cmdTheme = false;
 bool cmdAbout = false;
-bool cmdSaved = false;
 
 bool fmRDS = false;
 
@@ -440,37 +437,6 @@ uint16_t currentStepIdx = 1;
 const char *bandModeDesc[] = {"FM", "LSB", "USB", "AM"};
 const int lastBandModeDesc = (sizeof bandModeDesc / sizeof(char *)) - 1;
 uint8_t currentMode = FM;
-
-typedef struct
-{
-  const char *name;
-  uint8_t bandType;
-  uint16_t freq;
-} savedFreqs;
-
-savedFreqs savedDesc[] = {
-  { "> Curr",       FM_BAND_TYPE, 10000 },
-  { "Vesti FM",     FM_BAND_TYPE, 10070 },
-  { "Miliceiskaia", FM_BAND_TYPE, 8790 },
-  { "Radio Rosii",  FM_BAND_TYPE, 8990 },
-  { "Dorozhnoe",    FM_BAND_TYPE, 9030 },
-  { "Uymor FM",     FM_BAND_TYPE, 9110 },
-  { "Detskoe",      FM_BAND_TYPE, 9970 },
-  { "Avtoradio",    FM_BAND_TYPE, 1025 },
-  { "City",         FM_BAND_TYPE, 1029 },
-  { "Retro",        FM_BAND_TYPE, 1033 },
-  { "Radio Ugra",   FM_BAND_TYPE, 1050 },
-  { "Russkoe Radio",FM_BAND_TYPE, 1061 },
-  { "Love",         FM_BAND_TYPE, 1067 },
-  { "Mayak",        FM_BAND_TYPE, 1070 },
-  { "Monte-Carlo",  FM_BAND_TYPE, 1073 },
-  { "Energy",       FM_BAND_TYPE, 1079 },
-  { "Nokia",        FM_BAND_TYPE, 1010 },
- 
-};
-
-const int lastSavedDesc = (sizeof savedDesc / sizeof(savedFreqs)) - 1;
-uint8_t savedIdx = 0;
 
 /**
  *  Band data structure
@@ -1032,8 +998,7 @@ void disableCommands()
   cmdSleep = false;
   cmdTheme = false;
   cmdAbout = false;
-  cmdSaved = false;
-}
+  }
 
 
 bool isModalMode() {
@@ -1796,11 +1761,6 @@ void doCurrentMenuCmd() {
         cmdAvc = true;
       }
       showAvc();
-      break;
-    
-    case SAVED:
-      cmdSaved = true;
-      drawSprite();
       break;
 
     case MENU_SETTINGS:
