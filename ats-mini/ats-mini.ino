@@ -462,27 +462,30 @@ typedef struct
               Turn your receiver on with the encoder push button pressed at first time to RESET the eeprom content.
 */
 
-#define BAND_FM1 0
-#define BAND_FM2 1
-#define BAND_MW1 2
-#define BAND_MW2 3
-#define BAND_MW3 4
-#define BAND_80M 5
-#define BAND_SW1 6
-#define BAND_SW2 7
-#define BAND_40M 8
-#define BAND_SW3 9
-#define BAND_SW4 10
-#define BAND_SW5 11
-#define BAND_SW6 12
-#define BAND_20M 13
-#define BAND_SW7 14
-#define BAND_SW8 15
-#define BAND_15M 16
-#define BAND_SW9 17
-#define BAND_CB  18
-#define BAND_10M 19
-#define BAND_ALL 20
+#define BAND_FM1      0
+#define BAND_FM2      1
+#define BAND_MW1      2
+#define BAND_MW2      3
+#define BAND_MW3      4
+#define BAND_80M      5
+#define BAND_SW1      6
+#define BAND_SW2      7
+#define BAND_40M      8
+#define BAND_SW3      9
+#define BAND_SW4      10
+#define BAND_SW5      11
+#define BAND_SW6      12
+#define BAND_20M      13
+#define BAND_SW7      14
+#define BAND_SW8      15
+#define BAND_15M      16
+#define BAND_SW9      17
+#define BAND_CB       18
+#define BAND_10M      19
+#define BAND_ALL      20
+#define BAND_VESTI    21
+#define BAND_RADIORUS 22
+#define BAND_MAYAK    23
 
 Band band[] = {
     {"FM1", FM_BAND_TYPE, 6400, 8750, 7200, 1, 0},
@@ -506,6 +509,9 @@ Band band[] = {
     {"CB ", SW_BAND_TYPE, 26000, 30000, 27135, 0, 4},
     {"10M", SW_BAND_TYPE, 28000, 30000, 28400, 0, 4},
     {"ALL", SW_BAND_TYPE, 150, 30000, 15000, 0, 4} // All band. LW, MW and SW (from 150kHz to 30MHz)
+    {"VESTI", FM_BAND_TYPE, 10070, 10070, 10070, 1, 0},
+    {"RADIORUS", FM_BAND_TYPE, 8990, 8990, 8990, 1, 0},
+    {"MAYAK", FM_BAND_TYPE, 10700, 10700, 10700, 1, 0},  
 };
 
 const int lastBand = (sizeof band / sizeof(Band)) - 1;
@@ -516,12 +522,12 @@ int bandIdx = 0;
 
 // Calibration (per band). Size needs to be the same as band[]
 // Defaults
-int16_t bandCAL[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+int16_t bandCAL[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 // Mode (per band). Size needs to be the same as band[] and mode needs to be appropriate for bandType
 // Example bandType = FM_BAND_TYPE, bandMODE = FM. All other BAND_TYPE's, bandMODE = AM/LSB/USB
 // Defaults
-uint8_t bandMODE[] = { FM, FM, AM, AM, AM, LSB, AM, AM, LSB, AM, AM, AM, AM, USB, AM, AM, USB, AM, AM, USB, AM};
+uint8_t bandMODE[] = { FM, FM, AM, AM, AM, LSB, AM, AM, LSB, AM, AM, AM, AM, USB, AM, AM, USB, AM, AM, USB, AM, FM, FM, FM};
 
 const char *cbChannelNumber[] = {
     "1", "2", "3", "41",
