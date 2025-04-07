@@ -93,7 +93,7 @@
 #define MIN_ELAPSED_TIME         5  // 300
 #define MIN_ELAPSED_RSSI_TIME  200  // RSSI check uses IN_ELAPSED_RSSI_TIME * 6 = 1.2s
 #define ELAPSED_COMMAND      10000  // time to turn off the last command controlled by encoder. Time to goes back to the VFO control // G8PTN: Increased time and corrected comment
-#define DEFAULT_VOLUME          35  // change it for your favorite sound volume
+#define DEFAULT_VOLUME          40  // change it for your favorite sound volume
 #define STRENGTH_CHECK_TIME   1500  // Not used
 #define RDS_CHECK_TIME         250  // Increased from 90
 #define CLICK_TIME              50
@@ -261,8 +261,8 @@ uint8_t mute_vol_val = 0;               // Volume level when mute is applied
 // Menu options
 int16_t currentCAL = 0;                 // Calibration offset, +/- 1000Hz in steps of 10Hz
 uint16_t currentBrt = 128;              // Display brightness, range = 32 to 255 in steps of 32
-int8_t currentAVC = 48;                 // Selected AVC, range = 12 to 90 in steps of 2
-uint16_t currentSleep = 30;             // Display sleep timeout, range = 0 to 255 in steps of 5
+int8_t currentAVC = 58;                 // Selected AVC, range = 12 to 90 in steps of 2
+uint16_t currentSleep = 0;             // Display sleep timeout, range = 0 to 255 in steps of 5
 long elapsedSleep = millis();           // Display sleep timer
 
 // Background screen refresh
