@@ -487,25 +487,25 @@ typedef struct
 Band band[] = {
     {"FM1", FM_BAND_TYPE, 6400, 8750, 7200, 1, 0},
     {"FM2", FM_BAND_TYPE, 8750, 10800, 10290, 1, 0},
-    {"MW1", MW_BAND_TYPE, 150, 1720, 810, 3, 4},
-    {"MW2", MW_BAND_TYPE, 531, 1701, 783, 2, 4},
-    {"MW3", MW_BAND_TYPE, 1700, 3500, 2500, 1, 4},
+    {"LW ", MW_BAND_TYPE, 150, 1720, 810, 3, 4},
+    {"MW ", MW_BAND_TYPE, 531, 1701, 783, 2, 4},
+    {"90M", MW_BAND_TYPE, 1700, 3500, 2500, 1, 4},
     {"80M", MW_BAND_TYPE, 3500, 4000, 3700, 0, 4},
-    {"SW1", SW_BAND_TYPE, 4000, 5500, 4885, 1, 4},
-    {"SW2", SW_BAND_TYPE, 5500, 6500, 6000, 1, 4},
+    {"60M", SW_BAND_TYPE, 4000, 5500, 4885, 1, 4},
+    {"50M", SW_BAND_TYPE, 5500, 6500, 6000, 1, 4},
     {"40M", SW_BAND_TYPE, 6500, 7300, 7100, 0, 4},
-    {"SW3", SW_BAND_TYPE, 7200, 8000, 7200, 1, 4},
-    {"SW4", SW_BAND_TYPE, 9000, 11000, 9500, 1, 4},
-    {"SW5", SW_BAND_TYPE, 11100, 13000, 11900, 1, 4},
-    {"SW6", SW_BAND_TYPE, 13000, 14000, 13500, 1, 4},
+    {"41M", SW_BAND_TYPE, 7200, 8000, 7200, 1, 4},
+    {"31M", SW_BAND_TYPE, 9000, 11000, 9500, 1, 4},
+    {"25M", SW_BAND_TYPE, 11100, 13000, 11900, 1, 4},
+    {"21M", SW_BAND_TYPE, 13000, 14000, 13500, 1, 4},
     {"20M", SW_BAND_TYPE, 14000, 15000, 14200, 0, 4},
-    {"SW7", SW_BAND_TYPE, 15000, 17000, 15300, 1, 4},
-    {"SW8", SW_BAND_TYPE, 17000, 18000, 17500, 1, 4},
+    {"18M", SW_BAND_TYPE, 15000, 17000, 15300, 1, 4},
+    {"17M", SW_BAND_TYPE, 17000, 18000, 17500, 1, 4},
     {"15M", SW_BAND_TYPE, 20000, 21400, 21100, 0, 4},
-    {"SW9", SW_BAND_TYPE, 21400, 22800, 21500, 1, 4},
+    {"13M", SW_BAND_TYPE, 21400, 22800, 21500, 1, 4},
     {"CB ", SW_BAND_TYPE, 26000, 30000, 27135, 0, 4},
     {"10M", SW_BAND_TYPE, 28000, 30000, 28400, 0, 4},
-    {"ALL", SW_BAND_TYPE, 150, 30000, 15000, 0, 4} // All band. LW, MW and SW (from 150kHz to 30MHz)
+    {"SW ", SW_BAND_TYPE, 150, 30000, 15000, 0, 4} // All band. LW, MW and SW (from 150kHz to 30MHz)
 };
 
 const int lastBand = (sizeof band / sizeof(Band)) - 1;
