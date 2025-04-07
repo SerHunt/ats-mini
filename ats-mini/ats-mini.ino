@@ -488,7 +488,7 @@ typedef struct
 Band band[] = {
     {"FM1", FM_BAND_TYPE, 6400, 8750, 7200, 1, 0},
     {"FM2", FM_BAND_TYPE, 8750, 10800, 10290, 1, 0},
-    {"LW", LW_BAND_TYPE, 150, 1720, 810, 3, 4},
+    {"LW", MW_BAND_TYPE, 150, 1720, 810, 3, 4},
     {"MW", MW_BAND_TYPE, 531, 1701, 783, 2, 4},
     {"160", SW_BAND_TYPE, 1700, 3500, 2500, 1, 4},
     {"80M", SW_BAND_TYPE, 3500, 4000, 3700, 0, 4},
