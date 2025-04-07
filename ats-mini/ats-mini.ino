@@ -158,7 +158,7 @@ const uint16_t size_content = sizeof ssb_patch_content; // see patch_init.h
 // ====================================================================================================================================================
 const uint8_t  app_id  = 67;          //               EEPROM ID.  If EEPROM read value mismatch, reset EEPROM            eeprom_address        1
 const uint16_t app_ver = 109;         //               EEPROM VER. If EEPROM read value mismatch (older), reset EEPROM    eeprom_ver_address    2
-char app_date[] = "2025-04-03";
+char app_date[] = "2025-04-07";
 const int eeprom_address = 0;         //               EEPROM start address
 const int eeprom_set_address = 256;   //               EEPROM setting base address
 const int eeprom_setp_address = 272;  //               EEPROM setting (per band) base address
@@ -464,49 +464,49 @@ typedef struct
 
 #define BAND_FM1 0
 #define BAND_FM2 1
-#define BAND_MW1 2
-#define BAND_MW2 3
-#define BAND_MW3 4
+#define BAND_LW  2
+#define BAND_MW  3
+#define BAND_160 4
 #define BAND_80M 5
-#define BAND_SW1 6
-#define BAND_SW2 7
+#define BAND_75M 6
+#define BAND_50M 7
 #define BAND_40M 8
-#define BAND_SW3 9
-#define BAND_SW4 10
-#define BAND_SW5 11
-#define BAND_SW6 12
+#define BAND_41M 9
+#define BAND_30M 10
+#define BAND_25M 11
+#define BAND_21M 12
 #define BAND_20M 13
-#define BAND_SW7 14
-#define BAND_SW8 15
+#define BAND_18M 14
+#define BAND_17M 15
 #define BAND_15M 16
-#define BAND_SW9 17
+#define BAND_13M 17
 #define BAND_CB  18
 #define BAND_10M 19
-#define BAND_ALL 20
+#define BAND_SW  20
 
 
 Band band[] = {
     {"FM1", FM_BAND_TYPE, 6400, 8750, 7200, 1, 0},
     {"FM2", FM_BAND_TYPE, 8750, 10800, 10290, 1, 0},
-    {"MW1", MW_BAND_TYPE, 150, 1720, 810, 3, 4},
-    {"MW2", MW_BAND_TYPE, 531, 1701, 783, 2, 4},
-    {"MW3", MW_BAND_TYPE, 1700, 3500, 2500, 1, 4},
+    {"LW", MW_BAND_TYPE, 150, 1720, 810, 3, 4},
+    {"MW", MW_BAND_TYPE, 531, 1701, 783, 2, 4},
+    {"160", MW_BAND_TYPE, 1700, 3500, 2500, 1, 4},
     {"80M", MW_BAND_TYPE, 3500, 4000, 3700, 0, 4},
-    {"SW1", SW_BAND_TYPE, 4000, 5500, 4885, 1, 4},
-    {"SW2", SW_BAND_TYPE, 5500, 6500, 6000, 1, 4},
+    {"75M", SW_BAND_TYPE, 4000, 5500, 4885, 1, 4},
+    {"50M", SW_BAND_TYPE, 5500, 6500, 6000, 1, 4},
     {"40M", SW_BAND_TYPE, 6500, 7300, 7100, 0, 4},
-    {"SW3", SW_BAND_TYPE, 7200, 8000, 7200, 1, 4},
-    {"SW4", SW_BAND_TYPE, 9000, 11000, 9500, 1, 4},
-    {"SW5", SW_BAND_TYPE, 11100, 13000, 11900, 1, 4},
-    {"SW6", SW_BAND_TYPE, 13000, 14000, 13500, 1, 4},
+    {"41M", SW_BAND_TYPE, 7200, 8000, 7200, 1, 4},
+    {"30M", SW_BAND_TYPE, 9000, 11000, 9500, 1, 4},
+    {"25M", SW_BAND_TYPE, 11100, 13000, 11900, 1, 4},
+    {"21M", SW_BAND_TYPE, 13000, 14000, 13500, 1, 4},
     {"20M", SW_BAND_TYPE, 14000, 15000, 14200, 0, 4},
-    {"SW7", SW_BAND_TYPE, 15000, 17000, 15300, 1, 4},
-    {"SW8", SW_BAND_TYPE, 17000, 18000, 17500, 1, 4},
+    {"18M", SW_BAND_TYPE, 15000, 17000, 15300, 1, 4},
+    {"17M", SW_BAND_TYPE, 17000, 18000, 17500, 1, 4},
     {"15M", SW_BAND_TYPE, 20000, 21400, 21100, 0, 4},
-    {"SW9", SW_BAND_TYPE, 21400, 22800, 21500, 1, 4},
+    {"13M", SW_BAND_TYPE, 21400, 22800, 21500, 1, 4},
     {"CB ", SW_BAND_TYPE, 26000, 30000, 27135, 0, 4},
     {"10M", SW_BAND_TYPE, 28000, 30000, 28400, 0, 4},
-    {"ALL", SW_BAND_TYPE, 150, 30000, 15000, 0, 4} // All band. LW, MW and SW (from 150kHz to 30MHz)
+    {"SW", SW_BAND_TYPE, 150, 30000, 15000, 0, 4} // All band. LW, MW and SW (from 150kHz to 30MHz)
     };
 
 const int lastBand = (sizeof band / sizeof(Band)) - 1;
