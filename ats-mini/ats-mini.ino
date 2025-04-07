@@ -158,7 +158,7 @@ const uint16_t size_content = sizeof ssb_patch_content; // see patch_init.h
 // ====================================================================================================================================================
 const uint8_t  app_id  = 67;          //               EEPROM ID.  If EEPROM read value mismatch, reset EEPROM            eeprom_address        1
 const uint16_t app_ver = 109;         //               EEPROM VER. If EEPROM read value mismatch (older), reset EEPROM    eeprom_ver_address    2
-char app_date[] = "2025-04-07";
+char app_date[] = "2025-04-03";
 const int eeprom_address = 0;         //               EEPROM start address
 const int eeprom_set_address = 256;   //               EEPROM setting base address
 const int eeprom_setp_address = 272;  //               EEPROM setting (per band) base address
@@ -488,7 +488,7 @@ typedef struct
 Band band[] = {
     {"FM1", FM_BAND_TYPE, 6400, 8750, 7200, 1, 0},
     {"FM2", FM_BAND_TYPE, 8750, 10800, 10290, 1, 0},
-    {"LW", MW_BAND_TYPE, 150, 1720, 810, 3, 4},
+    {"LW", LW_BAND_TYPE, 150, 1720, 810, 3, 4},
     {"MW", MW_BAND_TYPE, 531, 1701, 783, 2, 4},
     {"160", SW_BAND_TYPE, 1700, 3500, 2500, 1, 4},
     {"80M", SW_BAND_TYPE, 3500, 4000, 3700, 0, 4},
@@ -506,7 +506,7 @@ Band band[] = {
     {"13M", SW_BAND_TYPE, 21400, 22800, 21500, 1, 4},
     {"CB ", CB_BAND_TYPE, 26000, 30000, 27135, 0, 4},
     {"10M", SW_BAND_TYPE, 28000, 30000, 28400, 0, 4},
-    {"SW", SW_BAND_TYPE, 150, 30000, 15000, 0, 4} // All band. LW, MW and SW (from 150kHz to 30MHz)
+    {"ALL", SW_BAND_TYPE, 150, 30000, 15000, 0, 4} // All band. LW, MW and SW (from 150kHz to 30MHz)
     };
 
 const int lastBand = (sizeof band / sizeof(Band)) - 1;
