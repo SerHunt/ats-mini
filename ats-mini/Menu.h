@@ -10,26 +10,27 @@
 #define LW_BAND_TYPE  3
 
 // Bands
-#define BAND_VHF      0
-#define BAND_MW1      1
-#define BAND_MW2      2
-#define BAND_MW3      3
-#define BAND_80M      4
-#define BAND_SW1      5
-#define BAND_SW2      6
-#define BAND_40M      7
-#define BAND_SW3      8
-#define BAND_SW4      9
-#define BAND_SW5      10
-#define BAND_SW6      11
-#define BAND_20M      12
-#define BAND_SW7      13
-#define BAND_SW8      14
-#define BAND_15M      15
-#define BAND_SW9      16
-#define BAND_CB       17
-#define BAND_10M      18
-#define BAND_ALL      19
+#define BAND_FM1      0
+#define BAND_FM2      1
+#define BAND_LW       2
+#define BAND_MW       3
+#define BAND_90m      4
+#define BAND_80m      5
+#define BAND_60m      6
+#define BAND_50m      7
+#define BAND_40m      8
+#define BAND_41m      9
+#define BAND_31m      10
+#define BAND_25m      11
+#define BAND_21m      12
+#define BAND_20m      13
+#define BAND_18m      14
+#define BAND_17m      15
+#define BAND_15m      16
+#define BAND_13m      17
+#define BAND_CB       18
+#define BAND_10M      19
+#define BAND_SW      20
 
 // Commands
 #define CMD_NONE      0x0000
