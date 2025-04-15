@@ -19,27 +19,28 @@ int bandIdx = 0;
 
 Band band[] =
 {
-  {"VHF", FM_BAND_TYPE, FM,   6400, 10800, 10390, 1, 0, 0},
-  {"MW1", MW_BAND_TYPE, AM,    150,  1720,   810, 3, 4, 0},
-  {"MW2", MW_BAND_TYPE, AM,    531,  1701,   783, 2, 4, 0},
-  {"MW3", MW_BAND_TYPE, AM,   1700,  3500,  2500, 1, 4, 0},
-  {"80M", MW_BAND_TYPE, LSB,  3500,  4000,  3700, 0, 4, 0},
-  {"SW1", SW_BAND_TYPE, AM,   4000,  5500,  4885, 1, 4, 0},
-  {"SW2", SW_BAND_TYPE, AM,   5500,  6500,  6000, 1, 4, 0},
-  {"40M", SW_BAND_TYPE, LSB,  6500,  7300,  7100, 0, 4, 0},
-  {"SW3", SW_BAND_TYPE, AM,   7200,  8000,  7200, 1, 4, 0},
-  {"SW4", SW_BAND_TYPE, AM,   9000, 11000,  9500, 1, 4, 0},
-  {"SW5", SW_BAND_TYPE, AM,  11100, 13000, 11900, 1, 4, 0},
-  {"SW6", SW_BAND_TYPE, AM,  13000, 14000, 13500, 1, 4, 0},
-  {"20M", SW_BAND_TYPE, USB, 14000, 15000, 14200, 0, 4, 0},
-  {"SW7", SW_BAND_TYPE, AM,  15000, 17000, 15300, 1, 4, 0},
-  {"SW8", SW_BAND_TYPE, AM,  17000, 18000, 17500, 1, 4, 0},
-  {"15M", SW_BAND_TYPE, USB, 20000, 21400, 21100, 0, 4, 0},
-  {"SW9", SW_BAND_TYPE, AM,  21400, 22800, 21500, 1, 4, 0},
+  {"FM1", FM_BAND_TYPE, FM,   6400, 8750,   7200, 1, 0, 0},
+  {"FM2", FM_BAND_TYPE, FM,   8750, 10800, 10290, 1, 0, 0},
+  {"LW", MW_BAND_TYPE, AM,    150,  1720,   810, 3, 4, 0},
+  {"MW", MW_BAND_TYPE, AM,    531,  1701,   783, 2, 4, 0},
+  {"90m", MW_BAND_TYPE, AM,   1700,  3500,  2500, 1, 4, 0},
+  {"80m", MW_BAND_TYPE, LSB,  3500,  4000,  3700, 0, 4, 0},
+  {"60m", SW_BAND_TYPE, AM,   4000,  5500,  4885, 1, 4, 0},
+  {"50m", SW_BAND_TYPE, AM,   5500,  6500,  6000, 1, 4, 0},
+  {"40m", SW_BAND_TYPE, LSB,  6500,  7300,  7100, 0, 4, 0},
+  {"41m", SW_BAND_TYPE, AM,   7200,  8000,  7200, 1, 4, 0},
+  {"31m", SW_BAND_TYPE, AM,   9000, 11000,  9500, 1, 4, 0},
+  {"25m", SW_BAND_TYPE, AM,  11100, 13000, 11900, 1, 4, 0},
+  {"21m", SW_BAND_TYPE, AM,  13000, 14000, 13500, 1, 4, 0},
+  {"20m", SW_BAND_TYPE, USB, 14000, 15000, 14200, 0, 4, 0},
+  {"18m", SW_BAND_TYPE, AM,  15000, 17000, 15300, 1, 4, 0},
+  {"17m", SW_BAND_TYPE, AM,  17000, 18000, 17500, 1, 4, 0},
+  {"15m", SW_BAND_TYPE, USB, 20000, 21400, 21100, 0, 4, 0},
+  {"13m", SW_BAND_TYPE, AM,  21400, 22800, 21500, 1, 4, 0},
   {"CB ", SW_BAND_TYPE, AM,  26000, 30000, 27135, 0, 4, 0},
-  {"10M", SW_BAND_TYPE, USB, 28000, 30000, 28400, 0, 4, 0},
+  {"10m", SW_BAND_TYPE, USB, 28000, 30000, 28400, 0, 4, 0},
   // All band. LW, MW and SW (from 150kHz to 30MHz)
-  {"ALL", SW_BAND_TYPE, AM,    150, 30000, 15000, 0, 4, 0}
+  {"SW", SW_BAND_TYPE, AM,    150, 30000, 15000, 0, 4, 0}
 };
 
 int getTotalBands() { return(ITEM_COUNT(band)); }
