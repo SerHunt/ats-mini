@@ -12,25 +12,25 @@
 // Bands
 #define BAND_FM1      0
 #define BAND_FM2      1
-#define BAND_LW       2
-#define BAND_MW       3
-#define BAND_90m      4
-#define BAND_80m      5
-#define BAND_60m      6
-#define BAND_50m      7
-#define BAND_40m      8
-#define BAND_41m      9
-#define BAND_31m      10
-#define BAND_25m      11
-#define BAND_21m      12
-#define BAND_20m      13
-#define BAND_18m      14
-#define BAND_17m      15
-#define BAND_15m      16
-#define BAND_13m      17
+#define BAND_MW1      2
+#define BAND_MW2      3
+#define BAND_MW3      4
+#define BAND_80M      5
+#define BAND_SW1      6
+#define BAND_SW2      7
+#define BAND_40M      8
+#define BAND_SW3      9
+#define BAND_SW4      10
+#define BAND_SW5      11
+#define BAND_SW6      12
+#define BAND_20M      13
+#define BAND_SW7      14
+#define BAND_SW8      15
+#define BAND_15M      16
+#define BAND_SW9      17
 #define BAND_CB       18
 #define BAND_10M      19
-#define BAND_SW       20
+#define BAND_ALL      20
 
 // Commands
 #define CMD_NONE      0x0000
@@ -107,6 +107,7 @@ int getTotalBands();
 Band *getCurrentBand();
 const Step *getCurrentStep();
 int getSteps(bool fast = false);
+const Bandwidth *getCurrentBandwidth();
 
 void doSoftMute(int dir);
 void doAgc(int dir);
