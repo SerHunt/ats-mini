@@ -30,7 +30,7 @@
 #define BAND_13m      17
 #define BAND_CB       18
 #define BAND_10M      19
-#define BAND_SW      20
+#define BAND_SW       20
 
 // Commands
 #define CMD_NONE      0x0000
