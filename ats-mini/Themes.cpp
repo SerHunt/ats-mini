@@ -7,7 +7,7 @@ const ColorTheme theme[] =
 #endif
 {
   {
-    "Default",
+    "standart",
     0x0000, // bg
     0xFFFF, // text
     0xD69A, // text_muted
